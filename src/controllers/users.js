@@ -1,26 +1,42 @@
-const getUsers = (request, response) => {
-  response.status = 200;
-  response.send("hello");
+const { req, res } = require("express");
+const User = require("../models/user");
+
+// Получим всех пользователей из БД
+const getUsers = async (req, res) => {
+  const users = await User.find({});
+  res.status(200).send(users);
 };
-const getUser = (request, response) => {
-  const { id } = request.params;
-  response.status = 200;
-  response.send(`user id ${id}`);
+
+// Получим пользователя по ID
+const getUser = async (req, res) => {
+  const { user_id } = req.params;
+  const user = await User.findById(user_id);
+  res.status(200).send(user);
 };
-const createUser = (request, response) => {
-  response.status = 200;
-  response.send("hello POST");
+
+// Создаем пользователя
+const createUser = async (req, res) => {
+  const user = await User.create({ ...req.body });
+  res.status(201).send(user);
 };
-const updateUser = (request, response) => {
-  //update one
+
+// Обновляем пользователя
+const updateUser = async (req, res) => {
+  const { user_id } = req.params;
+  const user = await User.findByIdAndUpdate(user_id, { ...req.body });
+  res.status(200).send(user);
 };
-const deleteUser = (request, response) => {
-  //get all
+
+// Удаляем пользователя
+const deleteUser = async (req, res) => {
+  const { user_id } = req.params;
+  const user = await User.findByIdAndDelete(user_id);
+  res.status(200).send("Success");
 };
 
 module.exports = {
-  getUser,
   getUsers,
+  getUser,
   createUser,
   updateUser,
   deleteUser,
